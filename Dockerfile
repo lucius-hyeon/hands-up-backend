@@ -30,7 +30,7 @@ RUN pip install --no-cache-dir -r requirements.txt
 ENTRYPOINT ["./docker-entrypoint.sh"]
 
 # gunicorn과 postgresql을 사용하기 위한 패키지를 설치합니다.
-RUN pip install django-environ
+# RUN pip install django-environ
 RUN pip install gunicorn psycopg2
 
 

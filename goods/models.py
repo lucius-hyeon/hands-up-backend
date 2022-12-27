@@ -11,7 +11,7 @@ from django.core.validators import validate_image_file_extension
 class Goods(models.Model):
     class Meta:
         db_table = "Goods"
-        ordering = ["-created_at"]  # 일단 추가해뒀습니다
+        ordering = ["-created_at"]
 
     seller = models.ForeignKey(User, on_delete=models.CASCADE, related_name="sell_goods")
     buyer = models.ForeignKey(User, on_delete=models.CASCADE, related_name="buy_goods", null=True, blank=True)
@@ -36,3 +36,12 @@ class GoodsImage(models.Model):
 
     class Meta:
         db_table = "GoodsImage"
+
+
+class Bid(models.Model):
+    class Meta:
+        db_table = "Bid"
+
+    goods = models.ForeignKey(Goods, on_delete=models.CASCADE)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    price = models.IntegerField()
