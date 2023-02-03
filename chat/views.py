@@ -64,15 +64,3 @@ class ChatViewSet(ViewSet):
         serializer = TradeMessageSerializer(queryset, many=True)
         
         return Response(serializer.data)
-
-
-# class ChatView(APIView):
-
-#     def get(self, reqeust):
-#         layer = get_channel_layer()
-#         print(dir(layer), layer)
-#         print(layer.receive_event_loop, layer.receive_count, layer.connection(0))
-#         # async_to_sync(layer.group_send)(f'alram_9', {'type': 'chat_message', 'response': json.dumps({'response_type' : 'alram', 'message': 'hi'})})
-#         # async_to_sync(layer.send)(f'alram_9', {'type': 'chat_message', 'response': json.dumps({'response_type' : 'alram', 'message': 'hi'})})
-
-#         return Response('연결 성공')

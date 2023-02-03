@@ -340,7 +340,6 @@ class ChatConsumerDirect(AsyncWebsocketConsumer):
         user = await self.get_user_obj(user_id)
         goods = await self.get_goods_obj(goods_id)
         trade_room_id = goods.trade_room_id
-        # trade_room_id = goods["trade_room"]
 
         message = text_data_json['message']
         
