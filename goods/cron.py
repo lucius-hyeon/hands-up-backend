@@ -53,8 +53,9 @@ def auction_start_and_end():
                 'goods_id' : goods.id,
                 'goods_title' : goods.title,
             }
-            room = TradeChatRoom.objects.create()
-            async_to_sync(layer.group_send)(f'alram_{goods.buyer.id}', {'type': 'chat_message', 'response': json.dumps(data)})
-            goods.trade_room = room
-            goods.save()
+            if goods.buyer:
+                room = TradeChatRoom.objects.create()
+                async_to_sync(layer.group_send)(f'alram_{goods.buyer.id}', {'type': 'chat_message', 'response': json.dumps(data)})
+                goods.trade_room = room
+                goods.save()
         auction_end_list.update(status=False)

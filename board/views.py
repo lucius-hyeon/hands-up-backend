@@ -124,19 +124,57 @@ class FreeCreateView(APIView):
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
+import datetime
+from django.utils import timezone
 
+# 트랜잭션
+from django.db import transaction
+from django.shortcuts import render, HttpResponse
 
 #자유게시판 상세
 class FreeDetailView(APIView):
     def get(self, request, free_article_id):
         free_article = get_object_or_404(FreeArticle, id=free_article_id)
-        try:
-            free_article.hits = free_article.hits+1
-            free_article.save()
-        except:
-            pass
+        tomorrow = datetime.datetime.replace(timezone.datetime.now(), hour=23, minute=59, second=0)
+        expires = datetime.datetime.strftime(tomorrow, "%a, %d-%b-%Y %H:%M:%S GMT")
+        
+        print(dir(request))
+        print(request.query_params)
+        cookies = request.COOKIES.get('user',1)
+        print(cookies)
         serializer = FreeDetailSerializer(free_article)
-        return Response(serializer.data, status=status.HTTP_200_OK)
+        response = Response(serializer.data, status=status.HTTP_200_OK)
+        # response.set_cookie('hit', value=free_article_id, max_age=None, expires=expires, path='/board', domain=None, secure=None, httponly=False, samesite=None)
+        # response.set_cookie('hit', value=free_article_id, max_age=None, expires=expires, path='/',httponly=False)
+        
+        if request.COOKIES.get('hit') is not None: # 쿠키에 hit 값이 이미 있을 경우
+            cookies = request.COOKIES.get('hit')
+            cookies_list = cookies.split('|') # '|'는 다르게 설정 가능 ex) '.'
+            if str(free_article_id) not in cookies_list:
+                response.set_cookie('hit', cookies+f'|{free_article_id}', expires=expires) # 쿠키 생성
+                free_article.hits += 1
+                free_article.save()
+                    
+        else: # 쿠키에 hit 값이 없을 경우(즉 현재 보는 게시글이 첫 게시글임)
+            response.set_cookie(str("hits"),value=free_article_id, expires=expires)
+            free_article.hits += 1
+            free_article.save()
+
+        print(response)
+        # views가 추가되면 해당 instance를 serializer에 표시
+        serializer = FreeDetailSerializer(free_article)
+        response = Response(serializer.data, status=status.HTTP_200_OK)
+        
+
+        return response
+    
+        # try:
+        #     free_article.hits = free_article.hits+1
+        #     free_article.save()
+        # except:
+        #     pass
+        # serializer = FreeDetailSerializer(free_article)
+        # return Response(serializer.data, status=status.HTTP_200_OK)
 
 
 #자유게시판 수정
