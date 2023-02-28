@@ -191,7 +191,8 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
 # CORS
 # live server port 5500
-CORS_ORIGIN_WHITELIST = ['http://hands-up.co.kr', 'http://3.38.252.232', 'http://backend.hands-up.co.kr']
+CORS_ORIGIN_WHITELIST = ['http://hands-up.co.kr', 'http://3.38.252.232', 'http://backend.hands-up.co.kr'
+                         ,'http://www.hands-up.co.kr']
 # 예외 없이 다 수락
 CORS_ALLOW_CREDENTIALS = False if DP_MODE else True
 CORS_ALLOW_ALL_ORIGINS = False if DP_MODE else True
